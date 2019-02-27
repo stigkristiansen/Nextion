@@ -82,7 +82,7 @@ class NextionGateway extends IPSModule
     }
 	
 	public function SendCommand($Command) {
-		$endOfMessage = "\xFF\xFF\xFF"
+		$endOfMessage = "\xFF\xFF\xFF";
 		SPRT_SendText(IPS_GetInstanceParentId($this->InstanceID), $Command.$endOfMessage);
 	}
  
