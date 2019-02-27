@@ -61,11 +61,11 @@ class NextionGateway extends IPSModule
 			$log->LogMessage("Buffer is reset");
 
 			try{
-					//$log->LogMessage("Sending the message to children");
-					//$this->SendDataToChildren(json_encode(Array("DataID" => "{C466EF5C-68FD-4B48-B833-4D65AFF90B12}", "Buffer" => $message)));
+				$log->LogMessage("Sending the message to the connected child");
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{63642483-512D-44D0-AD97-18FB03CD2503}", "Buffer" => $message)));
 				
 			}catch(Exeption $ex){
-				$log->LogMessageError("Failed to send message to all children Error: ".$ex->getMessage());
+				$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
 				$this->Unlock("ReceiveLock");
 		
 				return false;

@@ -10,5 +10,5 @@
     "parentRequirements" :  ["{2145F5A1-FE43-4FAB-9D03-C0255438542A}"] , 
     "childRequirements" :  [] , 
     "implemented" :  ["{63642483-512D-44D0-AD97-18FB03CD2503}"] , 
-    "prefix" :  "nhmi" 
+    "prefix" :  "NHMI" 
 }

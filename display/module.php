@@ -34,7 +34,7 @@ class NextionDisplay extends IPSModule
 		
 		$log->LogMessage("Received ".$message);
 		
-		if($data->DataID!="{99DC304B-1DE7-4F4E-8CC1-F949ADA6FAF3}") {
+		if($data->DataID!="{63642483-512D-44D0-AD97-18FB03CD2503}") {
 			$log->LogMessage("Got data from unsupportet parent! (unsupported GUID in DataID: "+$data->DataID+")");
 			return;
 		}
