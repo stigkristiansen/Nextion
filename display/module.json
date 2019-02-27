@@ -1,0 +1,14 @@
+{ 
+    "id" :  "{6FCA5DCB-FCD4-4819-90A4-A8C4D187AEA5}" , 
+    "name" :  "Nextion Display" , 
+    "type" :  3 , 
+    "vendor" :  "Stig Kristiansen" , 
+    "aliases" : 
+    [ 
+        "Nextion Display"  
+    ] ,   
+    "parentRequirements" :  ["{2145F5A1-FE43-4FAB-9D03-C0255438542A}"] , 
+    "childRequirements" :  [] , 
+    "implemented" :  ["{63642483-512D-44D0-AD97-18FB03CD2503}"] , 
+    "prefix" :  "nhmi" 
+}
