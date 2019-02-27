@@ -71,7 +71,7 @@ class NextionGateway extends IPSModule
 					return false;
 				}
 			} else
-				$log->LogMessage("The return code was: ".intval($message));
+				$log->LogMessage("The return code was: 0x".strtoupper(str_pad(dechex(ord($message)),2,'0',STR_PAD_LEFT)));
 		} else {
 			$log->LogMessage("No complete message yet...");
 			
