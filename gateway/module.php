@@ -19,7 +19,6 @@ class NextionGateway extends IPSModule
         parent::ApplyChanges();
     }
     
-
     public function ReceiveData($JSONString) {
 		$incomingData = json_decode($JSONString);
 		$incomingBuffer = utf8_decode($incomingData->Buffer);
@@ -81,6 +80,11 @@ class NextionGateway extends IPSModule
 		
 		return true;
     }
+	
+	public function SendCommand($Command) {
+		$endOfMessage = "\xFF\xFF\xFF"
+		SPRT_SendText(IPS_GetInstanceParentId($this->InstanceID), $Command.$endOfMessage);
+	}
  
     private function Lock($ident){
         for ($i = 0; $i < 100; $i++){
