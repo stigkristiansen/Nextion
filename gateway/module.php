@@ -58,30 +58,32 @@ class NextionGateway extends IPSModule
 
 			$this->SetBuffer("SerialBuffer", "");
 			$log->LogMessage("Buffer is reset");
-
-			try{
-				$log->LogMessage("Sending the message to the connected child");
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{63642483-512D-44D0-AD97-18FB03CD2503}", "Buffer" => $message)));
-				
-			}catch(Exeption $ex){
-				$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
-				$this->Unlock("ReceiveLock");
-		
-				return false;
-			}
+			
+			if(strlen($message)>1) { //length of 1 indicates a return code 
+				try{
+					$log->LogMessage("Sending the message to the connected child");
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{63642483-512D-44D0-AD97-18FB03CD2503}", "Buffer" => $message)));
+					
+				}catch(Exeption $ex){
+					$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
+					$this->Unlock("ReceiveLock");
+			
+					return false;
+				}
+			} else
+				$log->LogMessage("The return code was: ".dechex(intval($message));
 		} else {
 			$log->LogMessage("No complete message yet...");
 			
 			$this->SetBuffer("SerialBuffer", $data);
 			$log->LogMessage("Buffer is saved");
 		}
-
+				
 		$this->Unlock("ReceiveLock");
-		
 		return true;
     }
 	
-	public function SendCommand($Command) {
+	public function SendCommand(string $Command) {
 		$endOfMessage = "\xFF\xFF\xFF";
 		SPRT_SendText(IPS_GetInstanceParentId($this->InstanceID), $Command.$endOfMessage);
 	}
