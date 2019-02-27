@@ -1,9 +1,7 @@
 {
     "elements":
     [
-        { "type": "ValidationTextBox", "name": "house", "caption": "House" },
-		{ "type": "ValidationTextBox", "name": "unit", "caption": "Unit" },
 		{ "type": "CheckBox", "name": "log", "caption": "Enable logging" }
-    ],
+    ]
 
 }
