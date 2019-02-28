@@ -114,17 +114,25 @@ class NextionGateway extends IPSModule
 
 		SPRT_SendText(IPS_GetInstanceParentId($this->InstanceID), $Command.$endOfMessage);
 		
-		$log->LogMessage("The command was sendt");
+		$log->LogMessage("The command was sent");
 		
 		$loopCount = 1;
 		$returnCode = $this->GetBuffer("ReturnCode");
 		while ($returnCode=="ValueNotSet" && $loopCount < 100) {
-			$log->LogMessage("Waiting for return code...");
+			if(fmod(float($loopCount),2)>0)
+				$log->LogMessage("Waiting for return code...");
 			IPS_Sleep(mt_rand(1, 5));
 			
 			$returnCode = $this->GetBuffer("ReturnCode");
 			$loopCount++;
 		}
+		
+		if($loopCount==100) {
+			$log->LogMessage("Waiting for return code timed out");
+			return false;
+		}
+					
+		return $returnCode;
 		
 	}
  
@@ -144,7 +152,7 @@ class NextionGateway extends IPSModule
     private function Unlock($ident){
         IPS_SemaphoreLeave("NHMI_".(string)$this->InstanceID.(string)$ident);
 		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
-		$log->LogMessage("Buffer lock is released");
+		$log->LogMessage("Lock \"".$ident."\" is released");
     }
 }
 
