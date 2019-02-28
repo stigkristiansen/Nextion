@@ -121,7 +121,7 @@ class NextionGateway extends IPSModule
 		$returnCode = $this->GetBuffer("ReturnCode");
 		while ($returnCode=="ValueNotSet" && $loopCount < 100) {
 			if($loopCount==1>0)
-				$log->LogMessage("Waiting for return code...");
+				$log->LogMessage("SendCommand is waiting for a return code...");
 			IPS_Sleep(mt_rand(1, 5));
 			
 			$returnCode = $this->GetBuffer("ReturnCode");
@@ -133,7 +133,7 @@ class NextionGateway extends IPSModule
 			return false;
 		} 
 					
-		$log->LogMessage("The return code was received");
+		$log->LogMessage("The return code was received by SendCommand");
 		return $returnCode;
 		
 	}
