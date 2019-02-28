@@ -76,10 +76,10 @@ class NextionGateway extends IPSModule
 				$log->LogMessage("The return code was: 0x".strtoupper(str_pad(dechex($returnCode),2,'0',STR_PAD_LEFT)));
 				
 				if (!$this->Lock("ReturnCode")) {
-					$log->LogMessage("ReturnCode is already locked. Aborting message handling!");
+					$log->LogMessage("\"ReturnCode\" is already locked. Aborting message handling!");
 					return false; 
 				} else
-					$log->LogMessage("ReturnCode is locked");
+					$log->LogMessage("\"ReturnCode\" is locked");
 				
 				$this->SetBuffer("ReturnCode", $returnCode);
 				
@@ -103,10 +103,10 @@ class NextionGateway extends IPSModule
 		$log->LogMessage("Sending command \"".$Command."\"");
 		
 		if (!$this->Lock("ReturnCode")) {
-			$log->LogMessage("ReturnCode is already locked. Aborting SendCommand!");
+			$log->LogMessage("\"ReturnCode\" is already locked. Aborting SendCommand!");
 			return false; 
 		} else
-			$log->LogMessage("ReturnCode is locked");
+			$log->LogMessage("\"ReturnCode\" is locked");
 
 		$this->SetBuffer("ReturnCode", "ValueNotSet");
 		
