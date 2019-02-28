@@ -27,10 +27,10 @@ class NextionGateway extends IPSModule
 		$log->LogMessage("Incoming from serial: ".$incomingBuffer);
 		
 		if (!$this->Lock("SerialeBuffer")) {
-			$log->LogMessage("SerialeBuffer is already locked. Aborting message handling!");
+			$log->LogMessage("Lock \"SerialeBuffer\" is already locked. Aborting message handling!");
 			return false; 
 		} else
-			$log->LogMessage("SerialeBuffer is locked");
+			$log->LogMessage("Lock \"SerialeBuffer\" is locked");
 
 		$data = $this->GetBuffer("SerialBuffer");
 		$data .= $incomingBuffer;
@@ -79,7 +79,7 @@ class NextionGateway extends IPSModule
 					$log->LogMessage("\"ReturnCode\" is already locked. Aborting message handling!");
 					return false; 
 				} else
-					$log->LogMessage("\"ReturnCode\" is locked");
+					$log->LogMessage("Lock \"ReturnCode\" is locked");
 				
 				$this->SetBuffer("ReturnCode", $returnCode);
 				
