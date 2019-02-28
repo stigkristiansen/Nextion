@@ -70,8 +70,20 @@ class NextionGateway extends IPSModule
 			
 					return false;
 				}
-			} else
-				$log->LogMessage("The return code was: 0x".strtoupper(str_pad(dechex(ord($message)),2,'0',STR_PAD_LEFT)));
+			} else {
+				$returnCode = ord($message);
+				$log->LogMessage("The return code was: 0x".strtoupper(str_pad(dechex($returnCode),2,'0',STR_PAD_LEFT)));
+				
+				if (!$this->Lock("ReturnCodeLock")) {
+					$log->LogMessage("ReturnCode is already locked. Aborting message handling!");
+					return false; 
+				} else
+					$log->LogMessage("ReturnCode is locked");
+				
+				$this->SetBuffer("ReturnCode", $returnCode);
+				
+				$this->Unlock("ReturnCodeLock");
+			}
 		} else {
 			$log->LogMessage("No complete message yet...");
 			
@@ -79,13 +91,41 @@ class NextionGateway extends IPSModule
 			$log->LogMessage("Buffer is saved");
 		}
 				
-		$this->Unlock("ReceiveLock");
+		
 		return true;
     }
 	
 	public function SendCommand(string $Command) {
+		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
+		
+		$log->LogMessage("Sending command \"".$Command."\"");
+		
+		if (!$this->Lock("ReturnCodeLock")) {
+			$log->LogMessage("ReturnCode is already locked. Aborting SendCommand!");
+			return false; 
+		} else
+			$log->LogMessage("ReturnCode is locked");
+
+		$this->SetBuffer("ReturnCode", "ValueNotSet");
+		
+		$this->Unlock("ReturnCodeLock");
+		
 		$endOfMessage = "\xFF\xFF\xFF";
+
 		SPRT_SendText(IPS_GetInstanceParentId($this->InstanceID), $Command.$endOfMessage);
+		
+		$log->LogMessage("The command was sendt");
+		
+		$loopCount = 1;
+		$returnCode = $this->GetBuffer("ReturnCode");
+		while ($returnCode=="ValueNotSet" && $loopCount < 100) {
+			$log->LogMessage("Waiting for return code...");
+			IPS_Sleep(mt_rand(1, 5));
+			
+			$returnCode = $this->GetBuffer("ReturnCode");
+			$loopCount++;
+		}
+		
 	}
  
     private function Lock($ident){
