@@ -60,19 +60,18 @@ class NextionGateway extends IPSModule
 			$log->LogMessage("Buffer is reset");
 			$this->Unlock("SerialBuffer");
 			
+			$log->LogMessage("Analyzing the incoming message...");
 			if(strlen($message)>1) { //length of 1 indicates a return code 
 				try{
-					$log->LogMessage("Sending the message to the connected child");
+					$log->LogMessage("The message should be sent to the the connected child. Sending...");
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{63642483-512D-44D0-AD97-18FB03CD2503}", "Buffer" => $message)));
-					
 				}catch(Exeption $ex){
 					$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
-								
 					return false;
 				}
 			} else {
 				$returnCode = ord($message);
-				$log->LogMessage("Received a return code");
+				$log->LogMessage("The message received was a return code");
 				$log->LogMessage("The return code was 0x".strtoupper(str_pad(dechex($returnCode),2,'0',STR_PAD_LEFT)));
 				
 				if (!$this->Lock("ReturnCode")) {
