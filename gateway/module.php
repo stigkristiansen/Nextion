@@ -72,6 +72,7 @@ class NextionGateway extends IPSModule
 				}
 			} else {
 				$returnCode = ord($message);
+				$log->LogMessage("Received a return code");
 				$log->LogMessage("The return code was: 0x".strtoupper(str_pad(dechex($returnCode),2,'0',STR_PAD_LEFT)));
 				
 				if (!$this->Lock("ReturnCodeLock")) {
@@ -119,7 +120,7 @@ class NextionGateway extends IPSModule
 		$loopCount = 1;
 		$returnCode = $this->GetBuffer("ReturnCode");
 		while ($returnCode=="ValueNotSet" && $loopCount < 100) {
-			if(fmod((float)$loopCount,2)>0)
+			if($loopCount==1>0)
 				$log->LogMessage("Waiting for return code...");
 			IPS_Sleep(mt_rand(1, 5));
 			
@@ -130,8 +131,9 @@ class NextionGateway extends IPSModule
 		if($loopCount==100) {
 			$log->LogMessage("Waiting for return code timed out");
 			return false;
-		}
+		} 
 					
+		$log->LogMessage("The return code was received");
 		return $returnCode;
 		
 	}
