@@ -119,7 +119,7 @@ class NextionGateway extends IPSModule
 		$loopCount = 1;
 		$returnCode = $this->GetBuffer("ReturnCode");
 		while ($returnCode=="ValueNotSet" && $loopCount < 100) {
-			if(fmod(float($loopCount),2)>0)
+			if(fmod((float)$loopCount,2)>0)
 				$log->LogMessage("Waiting for return code...");
 			IPS_Sleep(mt_rand(1, 5));
 			
