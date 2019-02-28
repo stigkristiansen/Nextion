@@ -58,6 +58,7 @@ class NextionGateway extends IPSModule
 
 			$this->SetBuffer("SerialBuffer", "");
 			$log->LogMessage("Buffer is reset");
+			$this->Unlock("SerialBuffer");
 			
 			if(strlen($message)>1) { //length of 1 indicates a return code 
 				try{
@@ -66,8 +67,7 @@ class NextionGateway extends IPSModule
 					
 				}catch(Exeption $ex){
 					$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
-					$this->Unlock("SerialBuffer");
-			
+								
 					return false;
 				}
 			} else {
@@ -91,9 +91,7 @@ class NextionGateway extends IPSModule
 			$this->SetBuffer("SerialBuffer", $data);
 			$log->LogMessage("Buffer is saved");
 		}
-		
-		$this->Unlock("SerialBuffer");
-		
+				
 		return true;
     }
 	
