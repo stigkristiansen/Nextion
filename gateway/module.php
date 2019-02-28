@@ -26,11 +26,11 @@ class NextionGateway extends IPSModule
 		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Incoming from serial: ".$incomingBuffer);
 		
-		if (!$this->Lock("ReceiveLock")) {
-			$log->LogMessage("Buffer is already locked. Aborting message handling!");
+		if (!$this->Lock("SerialeBuffer")) {
+			$log->LogMessage("SerialeBuffer is already locked. Aborting message handling!");
 			return false; 
 		} else
-			$log->LogMessage("Buffer is locked");
+			$log->LogMessage("SerialeBuffer is locked");
 
 		$data = $this->GetBuffer("SerialBuffer");
 		$data .= $incomingBuffer;
@@ -66,7 +66,7 @@ class NextionGateway extends IPSModule
 					
 				}catch(Exeption $ex){
 					$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
-					$this->Unlock("ReceiveLock");
+					$this->Unlock("SerialeBuffer");
 			
 					return false;
 				}
@@ -75,7 +75,7 @@ class NextionGateway extends IPSModule
 				$log->LogMessage("Received a return code");
 				$log->LogMessage("The return code was: 0x".strtoupper(str_pad(dechex($returnCode),2,'0',STR_PAD_LEFT)));
 				
-				if (!$this->Lock("ReturnCodeLock")) {
+				if (!$this->Lock("ReturnCode")) {
 					$log->LogMessage("ReturnCode is already locked. Aborting message handling!");
 					return false; 
 				} else
@@ -83,7 +83,7 @@ class NextionGateway extends IPSModule
 				
 				$this->SetBuffer("ReturnCode", $returnCode);
 				
-				$this->Unlock("ReturnCodeLock");
+				$this->Unlock("ReturnCode");
 			}
 		} else {
 			$log->LogMessage("No complete message yet...");
@@ -91,7 +91,8 @@ class NextionGateway extends IPSModule
 			$this->SetBuffer("SerialBuffer", $data);
 			$log->LogMessage("Buffer is saved");
 		}
-				
+		
+		$this->Unlock("SerialeBuffer");
 		
 		return true;
     }
@@ -101,7 +102,7 @@ class NextionGateway extends IPSModule
 		
 		$log->LogMessage("Sending command \"".$Command."\"");
 		
-		if (!$this->Lock("ReturnCodeLock")) {
+		if (!$this->Lock("ReturnCode")) {
 			$log->LogMessage("ReturnCode is already locked. Aborting SendCommand!");
 			return false; 
 		} else
@@ -109,7 +110,7 @@ class NextionGateway extends IPSModule
 
 		$this->SetBuffer("ReturnCode", "ValueNotSet");
 		
-		$this->Unlock("ReturnCodeLock");
+		$this->Unlock("ReturnCode");
 		
 		$endOfMessage = "\xFF\xFF\xFF";
 
