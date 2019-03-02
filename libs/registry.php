@@ -142,7 +142,7 @@ class DeviceTypeRegistry
         return $form;
     }
 	
-	ublic function getTranslations(): array
+	public function getTranslations(): array
     {
         $translations = [
             'no' => [
