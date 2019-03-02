@@ -141,6 +141,36 @@ class DeviceTypeRegistry
         }
         return $form;
     }
+	
+	ublic function getTranslations(): array
+    {
+        $translations = [
+            'no' => [
+				'Name'                                                                                                                                 => 'Navn',
+                'ID'                                                                                                                                   => 'ID',
+                'Status'                                                                                                                               => 'Status',
+            ]
+        ];
+        
+		foreach (self::$supportedDeviceTypes as $deviceType) {
+            foreach (call_user_func(self::classPrefix . $deviceType . '::getTranslations') as $language => $languageTranslations) {
+                if (array_key_exists($language, $translations)) {
+                    foreach ($languageTranslations as $original => $translated) {
+                        if (array_key_exists($original, $translations[$language])) {
+                            if ($translations[$language][$original] != $translated) {
+                                throw new Exception('Different translations ' . $translated . ' + ' . $translations[$language][$original] . ' for original ' . $original . ' was found!');
+                            }
+                        } else {
+                            $translations[$language][$original] = $translated;
+                        }
+                    }
+                } else {
+                    $translations[$language] = $languageTranslations;
+                }
+            }
+        }
+        return $translations;
+    }
 }
 	
 ?>
