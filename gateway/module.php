@@ -147,6 +147,21 @@ class NextionGateway extends IPSModule {
 		return $returnCode;
 		
 	}
+	
+	public function GetConfigurationForm() {
+        
+        $logging = [
+			[
+				"type": "CheckBox",
+				"name": "log",
+				"caption": "Enable logging"
+			]
+		];
+
+		$deviceTypes = $this->registry->getConfigurationForm();
+        return json_encode(['elements'      => array_merge($deviceTypes, $logging),
+                            'translations'  => $this->registry->getTranslations()]);
+    }
  
     private function Lock($ident){
         for ($i = 0; $i < 100; $i++){

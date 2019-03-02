@@ -77,6 +77,69 @@ class DeviceTypeRegistry
             IPS_ApplyChanges($this->instanceID);
         }
     }
+	
+	public function getConfigurationForm(): array {
+        $form = [];
+        $sortedDeviceTypes = self::$supportedDeviceTypes;
+        uasort($sortedDeviceTypes, function ($a, $b) {
+            $posA = call_user_func(self::classPrefix . $a . '::getPosition');
+            $posB = call_user_func(self::classPrefix . $b . '::getPosition');
+            return ($posA < $posB) ? -1 : 1;
+        });
+		
+        foreach ($sortedDeviceTypes as $deviceType) {
+            $columns = [
+                [
+                    'label' => 'ID',
+                    'name'  => 'ID',
+                    'width' => '35px',
+                    'add'   => '',
+                    'save'  => true
+                ],
+                [
+                    'label' => 'Name',
+                    'name'  => 'Name',
+                    'width' => 'auto',
+                    'add'   => '',
+                    'edit'  => [
+                        'type' => 'ValidationTextBox'
+                    ]
+                ], //We will insert the custom columns here
+                [
+                    'label' => 'Status',
+                    'name'  => 'Status',
+                    'width' => '200px',
+                    'add'   => '-'
+                ]
+            ];
+            array_splice($columns, 2, 0, call_user_func(self::classPrefix . $deviceType . '::getColumns'));
+            $values = [];
+            $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
+            foreach ($configurations as $configuration) {
+                $values[] = [
+                    'Status' => call_user_func(self::classPrefix . $deviceType . '::getStatus', $configuration)
+                ];
+            }
+            $form[] = [
+                'type'    => 'ExpansionPanel',
+                'caption' => call_user_func(self::classPrefix . $deviceType . '::getCaption'),
+                'items'   => [[
+                    'type'     => 'List',
+                    'name'     => self::propertyPrefix . $deviceType,
+                    'rowCount' => 5,
+                    'add'      => true,
+                    'delete'   => true,
+                    'sort'     => [
+                        'column'    => 'Name',
+                        'direction' => 'ascending'
+                    ],
+                    'columns' => $columns,
+                    'values'  => $values
+                ]]
+            ];
+        }
+        return $form;
+    }
 }
 	
 ?>
