@@ -9,7 +9,7 @@ class DeviceTypeGenericSwitch {
     
 	private static $displayStatusPrefix = false;
     
-	//use HelperDeviceType;
+	use HelperDeviceType;
     
 	public static function getPosition(){
         return 50;
@@ -26,14 +26,6 @@ class DeviceTypeGenericSwitch {
                 'Variable'       => 'Variabel'
             ]
         ];
-    }
-	
-	public static function getColumns(){
-        $columns = [];
-        foreach (self::$implementedTraits as $trait) {
-            $columns = array_merge($columns, call_user_func('DeviceTrait' . $trait . '::getColumns'));
-        }
-        return $columns;
     }
 }
 
