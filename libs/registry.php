@@ -4,6 +4,7 @@ class DeviceTypeRegistry
 {
     const classPrefix = 'DeviceType';
     const propertyPrefix = 'Device';
+	
     private static $supportedDeviceTypes = [];
     
 	public static function register(string $deviceType): void {
