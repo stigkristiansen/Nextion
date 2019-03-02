@@ -157,7 +157,7 @@ class NextionGateway extends IPSModule {
         $logging = [
 			[
 				'type' => 'CheckBox',
-				'name" => "log',
+				'name' => 'log',
 				'caption' => 'Enable logging'
 			]
 		];
