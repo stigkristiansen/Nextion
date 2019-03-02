@@ -152,12 +152,12 @@ class NextionGateway extends IPSModule {
         
         $logging = [
 			[
-				"type": "CheckBox",
-				"name": "log",
-				"caption": "Enable logging"
+				'type' => 'CheckBox',
+				'name" => "log',
+				'caption' => 'Enable logging'
 			]
 		];
-
+		
 		$deviceTypes = $this->registry->getConfigurationForm();
         return json_encode(['elements'      => array_merge($deviceTypes, $logging),
                             'translations'  => $this->registry->getTranslations()]);
