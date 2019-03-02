@@ -3,9 +3,13 @@
 require_once(__DIR__ . "/../libs/protocols.php");  
 require_once(__DIR__ . "/../libs/logging.php");
 
-class NextionDisplay extends IPSModule
-{
-    public function Create() {
+
+class NextionDisplay extends IPSModule {
+    private $registry = null;
+	
+
+	
+	public function Create() {
         parent::Create();
         $this->RequireParent("{99DC304B-1DE7-4F4E-8CC1-F949ADA6FAF3}");
 		
@@ -13,6 +17,9 @@ class NextionDisplay extends IPSModule
 		
 		// register kernel messages
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
+		
+
+
     }
 
     public function ApplyChanges() {

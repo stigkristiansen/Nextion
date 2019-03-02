@@ -1,0 +1,82 @@
+<?php
+declare(strict_types=1);
+class DeviceTypeRegistry
+{
+    const classPrefix = 'DeviceType';
+    const propertyPrefix = 'Device';
+    private static $supportedDeviceTypes = [];
+    
+	public static function register(string $deviceType): void {
+        //Check if the same service was already registered
+        if (in_array($deviceType, self::$supportedDeviceTypes)) {
+            throw new Exception('Cannot register deviceType! ' . $deviceType . ' is already registered.');
+        }
+        //Add to our static array
+        self::$supportedDeviceTypes[] = $deviceType;
+    }
+	
+    private $registerProperty = null;
+    private $sendDebug = null;
+    private $instanceID = 0;
+    
+	public function __construct(int $instanceID, callable $registerProperty, callable $sendDebug) {
+        $this->sendDebug = $sendDebug;
+        $this->registerProperty = $registerProperty;
+        $this->instanceID = $instanceID;
+    }
+    
+	public function registerProperties(): void {
+        //Add all deviceType specific properties
+        foreach (self::$supportedDeviceTypes as $actionType) {
+            ($this->registerProperty)(self::propertyPrefix . $actionType, '[]');
+        }
+    }
+    
+	public function updateProperties(): void {
+        $ids = [];
+        //Check that all IDs have distinct values and build an id array
+        foreach (self::$supportedDeviceTypes as $actionType) {
+            $datas = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $actionType), true);
+            foreach ($datas as $data) {
+                //Skip over uninitialized zero values
+                if ($data['ID'] != '') {
+                    if (in_array($data['ID'], $ids)) {
+                        throw new Exception('ID has to be unique for all devices');
+                    }
+                    $ids[] = $data['ID'];
+                }
+            }
+        }
+        //Sort array and determine highest value
+        rsort($ids);
+        //Start with zero
+        $highestID = 0;
+        //Highest value is first
+        if ((count($ids) > 0) && ($ids[0] > 0)) {
+            $highestID = $ids[0];
+        }
+        //Update all properties and ids which are currently empty
+        $wasChanged = false;
+        foreach (self::$supportedDeviceTypes as $actionType) {
+            $wasUpdated = false;
+            $datas = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $actionType), true);
+            foreach ($datas as &$data) {
+                if ($data['ID'] == '') {
+                    $data['ID'] = (string) (++$highestID);
+                    $wasChanged = true;
+                    $wasUpdated = true;
+                }
+            }
+            if ($wasUpdated) {
+                IPS_SetProperty($this->instanceID, self::propertyPrefix . $actionType, json_encode($datas));
+            }
+        }
+        //This is dangerous. We need to be sure that we do not end in an endless loop!
+        if ($wasChanged) {
+            //Save. This will start a recursion. We need to be careful, that the recursion stops after this.
+            IPS_ApplyChanges($this->instanceID);
+        }
+    }
+}
+	
+?>

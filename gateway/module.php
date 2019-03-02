@@ -2,16 +2,31 @@
 
 require_once(__DIR__ . "/../libs/logging.php");
 require_once(__DIR__ . "/../libs/protocols.php");
+require_once(__DIR__ . "/../libs/registry.php");
+include_once(__DIR__ . "/../types/autoload.php");
 
-class NextionGateway extends IPSModule
-{
-    
+class NextionGateway extends IPSModule {
+    public function __construct($InstanceID)
+    {
+        parent::__construct($InstanceID);
+        $this->registry = new DeviceTypeRegistry(
+            $this->InstanceID,
+            function ($Name, $Value) {
+                $this->RegisterPropertyString($Name, $Value);
+            },
+            function ($Message, $Data, $Format) {
+                $this->SendDebug($Message, $Data, $Format);
+            }
+        );
+    }
     public function Create()
     {
         parent::Create();
         $this->RequireParent("{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}");
         
         $this->RegisterPropertyBoolean ("log", false );
+		
+		$this->registry->registerProperties();
     }
 
     public function ApplyChanges()
@@ -67,7 +82,6 @@ class NextionGateway extends IPSModule
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{63642483-512D-44D0-AD97-18FB03CD2503}", "Buffer" => $message)));
 				}catch(Exeption $ex){
 					$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
-					return false;
 				}
 			} else {
 				$returnCode = ord($message);
@@ -76,7 +90,6 @@ class NextionGateway extends IPSModule
 				
 				if (!$this->Lock("ReturnCode")) {
 					$log->LogMessage("\"ReturnCode\" is already locked. Aborting message handling!");
-					return false; 
 				} else
 					$log->LogMessage("Lock \"ReturnCode\" is locked");
 				
@@ -90,8 +103,6 @@ class NextionGateway extends IPSModule
 			$this->SetBuffer("SerialBuffer", $data);
 			$log->LogMessage("Buffer is saved");
 		}
-				
-		return true;
     }
 	
 	public function SendCommand(string $Command) {
