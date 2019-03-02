@@ -27,6 +27,14 @@ class DeviceTypeGenericSwitch {
             ]
         ];
     }
+	
+	public static function getColumns(){
+        $columns = [];
+        foreach (self::$implementedTraits as $trait) {
+            $columns = array_merge($columns, call_user_func('DeviceTrait' . $trait . '::getColumns'));
+        }
+        return $columns;
+    }
 }
 
 DeviceTypeRegistry::register('GenericSwitch');

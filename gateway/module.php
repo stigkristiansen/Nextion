@@ -3,7 +3,11 @@
 require_once(__DIR__ . "/../libs/logging.php");
 require_once(__DIR__ . "/../libs/protocols.php");
 require_once(__DIR__ . "/../libs/registry.php");
+include_once(__DIR__ . "/../helper/autoload.php");
+include_once(__DIR__ . "/../traits/autoload.php");
 include_once(__DIR__ . "/../types/autoload.php");
+
+
 
 class NextionGateway extends IPSModule {
     public function __construct($InstanceID)
