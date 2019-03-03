@@ -69,7 +69,7 @@ class NextionGateway extends IPSModule {
     {
 		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
 		
-		$log->LogMessage("Received ".$messageID." from ".$senderId);
+		$log->LogMessage("Received ".(string)$messageID." from ".(string)$senderId);
 		
         if ($messageID == 10603) {
             $currentVariableUpdatesString = $this->GetBuffer('VariableUpdates');
@@ -77,9 +77,11 @@ class NextionGateway extends IPSModule {
             $currentVariableUpdates[] = $senderID;
             $this->SetBuffer('VariableUpdates', json_encode($currentVariableUpdates));
             $this->SetTimerInterval('ReportStateTimer', 1000);
+			
+			$log->LogMessage("Variable updates: ".json_encode($currentVariableUpdates));
         }
 		
-		$log->LogMessage("Variable updates: ".json_encode($currentVariableUpdates));
+		
     }
 	
     public function ReportState(){
