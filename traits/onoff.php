@@ -39,8 +39,8 @@ class DeviceTraitOnOff
             }
 			
 			IPS_LogMessage("Test","Configuration: ".json_encode($configuration));
-			
-			$command = $configuration['Mapping']."val=".self::getSwitchValue($configuration[self::propertyPrefix . 'ID'])?"true":"false";
+			//self::getSwitchValue($configuration[self::propertyPrefix . 'ID'])?"true":"false"
+			$command = $configuration['Mapping'];
 			
             return [
 				'command' => $command
