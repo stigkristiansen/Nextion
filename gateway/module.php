@@ -82,8 +82,11 @@ class NextionGateway extends IPSModule {
 		$log->LogMessage("Variable updates: ".json_encode($currentVariableUpdates));
     }
 	
-    public function ReportState()
-    {
+    public function ReportState(){
+		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
+		
+		$log->LogMessage("ReportState timer was triggered");
+		
         $variableUpdates = $this->GetBuffer('VariableUpdates');
         if ($variableUpdates != '') {
             $this->registry->ReportState(json_decode($variableUpdates, true));
