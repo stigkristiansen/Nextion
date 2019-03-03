@@ -16,13 +16,13 @@ class DeviceTypeGenericSwitch {
     }
     
 	public static function getCaption(){
-        return 'Generic Switch';
+        return 'Dual-state button';
     }
     
 	public static function getTranslations(){
         return [
             'no' => [
-                'Generic Switch' => 'Generisk bryter',
+                'Generic Switch' => 'Flip-bryter',
                 'Variable'       => 'Variabel'
             ]
         ];

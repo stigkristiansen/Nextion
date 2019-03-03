@@ -143,7 +143,7 @@ class DeviceTypeRegistry
                     ]
                 ], //We will insert the custom columns here
                 [
-					'label' => 'Mapping',
+					'label' => 'Nextion object mapping',
                     'name'  => 'Mapping',
                     'width' => 'auto',
                     'add'   => '',
