@@ -43,7 +43,7 @@ class DeviceTraitOnOff
 			$command = $configuration['Mapping']."val=".self::getSwitchValue($configuration[self::propertyPrefix . 'ID'])?"true":"false";
 			
             return [
-				'command' => $command;
+				'command' => $command
             ];
         } else {
             return [];
