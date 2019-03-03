@@ -36,6 +36,8 @@ class NextionGateway extends IPSModule {
     public function ApplyChanges()
     {
         parent::ApplyChanges();
+		
+		$this->registry->updateProperties();
     }
     
     public function ReceiveData($JSONString) {
