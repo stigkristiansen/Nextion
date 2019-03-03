@@ -30,6 +30,8 @@ class NextionGateway extends IPSModule {
         
         $this->RegisterPropertyBoolean ("log", false );
 		
+		$this->RegisterTimer('ReportStateTimer', 0, 'NHMI_ReportState($_IPS[\'TARGET\']);');
+		
 		$this->registry->registerProperties();
     }
 
@@ -38,6 +40,50 @@ class NextionGateway extends IPSModule {
         parent::ApplyChanges();
 		
 		$this->registry->updateProperties();
+		
+		$objectIDs = $this->registry->getObjectIDs();
+				
+		// Recreate references (version >5.1)
+		if (method_exists($this, 'GetReferenceList')) {
+            $refs = $this->GetReferenceList();
+            foreach ($refs as $ref) {
+                $this->UnregisterReference($ref);
+            }
+            foreach ($objectIDs as $id) {
+                $this->RegisterReference($id);
+            }
+        }
+		
+		// Recreate subscription to updates
+		foreach ($this->GetMessageList() as $variableID => $messages) {
+            $this->UnregisterMessage($variableID, 10603 /* VM_UPDATE */);
+        }
+        foreach ($objectIDs as $variableID) {
+            if (IPS_VariableExists($variableID)) {
+                $this->RegisterMessage($variableID, 10603 /* VM_UPDATE */);
+            }
+        }
+    }
+	
+	public function MessageSink($timestamp, $senderID, $messageID, $data)
+    {
+        if ($messageID == 10603) {
+            $currentVariableUpdatesString = $this->GetBuffer('VariableUpdates');
+            $currentVariableUpdates = ($currentVariableUpdatesString == '') ? [] : json_decode($currentVariableUpdatesString, true);
+            $currentVariableUpdates[] = $senderID;
+            $this->SetBuffer('VariableUpdates', json_encode($currentVariableUpdates));
+            $this->SetTimerInterval('ReportStateTimer', 1000);
+        }
+    }
+	
+    public function ReportState()
+    {
+        $variableUpdates = $this->GetBuffer('VariableUpdates');
+        if ($variableUpdates != '') {
+            $this->registry->ReportState(json_decode($variableUpdates, true));
+            $this->SetBuffer('VariableUpdates', '');
+        }
+        $this->SetTimerInterval('ReportStateTimer', 0);
     }
     
     public function ReceiveData($JSONString) {
