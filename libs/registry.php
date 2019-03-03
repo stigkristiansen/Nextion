@@ -103,7 +103,7 @@ class DeviceTypeRegistry
                     $queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
                     if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
                         $states[$configuration['ID']] = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
-						//$states[$configuration['ID']][] = "mapping" => $configuration['Mapping'];
+						
                     }
                 }
             }
