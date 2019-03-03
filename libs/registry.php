@@ -92,6 +92,21 @@ class DeviceTypeRegistry
     }
 	
 	 public function ReportState($variableUpdates){
+        $states = [];
+        foreach (self::$supportedDeviceTypes as $deviceType) {
+            $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
+            foreach ($configurations as $configuration) {
+                $variableIDs = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
+                if (count(array_intersect($variableUpdates, $variableIDs)) > 0) {
+                    $queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
+                    if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
+                        $states[$configuration['ID']] = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
+                    }
+                }
+            }
+        }
+		
+		IPS_LogMessage('Test: '.json_encode($states));
 	 
 	 }
 	
