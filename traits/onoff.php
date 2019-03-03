@@ -38,7 +38,8 @@ class DeviceTraitOnOff
                 ];
             }
             return [
-                'on' => self::getSwitchValue($configuration[self::propertyPrefix . 'ID'])
+                'on' => self::getSwitchValue($configuration[self::propertyPrefix . 'ID']),
+				'mapping' => $configuration['Mapping']
             ];
         } else {
             return [];
