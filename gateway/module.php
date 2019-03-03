@@ -98,6 +98,9 @@ class NextionGateway extends IPSModule {
             $this->SetBuffer('VariableUpdates', '');
         }
 		
+		foreach($states as $state) {
+			$this->SendCommand($state['command']);
+		}
     }
     
     public function ReceiveData($JSONString) {
