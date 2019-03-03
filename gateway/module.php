@@ -67,6 +67,10 @@ class NextionGateway extends IPSModule {
 	
 	public function MessageSink($timestamp, $senderID, $messageID, $data)
     {
+		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
+		
+		$log->LogMessage("Received vm_update from ".$senderId);
+		
         if ($messageID == 10603) {
             $currentVariableUpdatesString = $this->GetBuffer('VariableUpdates');
             $currentVariableUpdates = ($currentVariableUpdatesString == '') ? [] : json_decode($currentVariableUpdatesString, true);
