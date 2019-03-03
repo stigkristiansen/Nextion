@@ -91,6 +91,10 @@ class DeviceTypeRegistry
         return $result;
     }
 	
+	 public function ReportState($variableUpdates){
+	 
+	 }
+	
 	public function getConfigurationForm(): array {
         $form = [];
         $sortedDeviceTypes = self::$supportedDeviceTypes;
@@ -119,12 +123,22 @@ class DeviceTypeRegistry
                     ]
                 ], //We will insert the custom columns here
                 [
+					'label' => 'Mapping',
+                    'name'  => 'Mapping',
+                    'width' => 'auto',
+                    'add'   => '',
+                    'edit'  => [
+                        'type' => 'ValidationTextBox'
+                    ]
+				],
+				[
                     'label' => 'Status',
                     'name'  => 'Status',
                     'width' => '200px',
                     'add'   => '-'
                 ]
             ];
+			
             array_splice($columns, 2, 0, call_user_func(self::classPrefix . $deviceType . '::getColumns'));
             $values = [];
             $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
