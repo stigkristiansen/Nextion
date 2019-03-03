@@ -94,7 +94,7 @@ class NextionGateway extends IPSModule {
         $variableUpdates = $this->GetBuffer('VariableUpdates');
 		$states = [];
         if ($variableUpdates != '') {
-            $this->registry->ReportState(json_decode($variableUpdates, true));
+            $states = $this->registry->ReportState(json_decode($variableUpdates, true));
             $this->SetBuffer('VariableUpdates', '');
         }
 		
