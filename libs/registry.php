@@ -111,6 +111,8 @@ class DeviceTypeRegistry
 
 		IPS_logMessage("Test","States: ".json_encode($states));
 		
+		return $states;
+		
 	 }
 	
 	public function getConfigurationForm(): array {
