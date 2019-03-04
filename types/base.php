@@ -99,9 +99,21 @@ trait HelperDeviceTypeGetVariables
         return $result;
     }
 }
+trait HelperDeviceTypeMappings
+{
+    public static function getMappings($configuration)
+    {
+        $result = [];
+        foreach (self::$implementedTraits as $trait) {
+            $result = array_unique(array_merge($result, call_user_func('DeviceTrait' . $trait . '::getMappings', $configuration)));
+        }
+        return $result;
+    }
+}
 trait HelperDeviceType
 {
     use HelperDeviceTypeGetVariables;
+	use HelperDeviceTypeMappings;
     use HelperDeviceTypeColumns;
     use HelperDeviceTypeStatus;
     use HelperDeviceTypeSync;
