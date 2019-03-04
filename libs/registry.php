@@ -139,7 +139,7 @@ class DeviceTypeRegistry{
 				case 'SETVALUE':
 				
 					break;
-				else
+				case else
 					throw new Exception('Unsupported command received from Nextion');
 			}
 		}
