@@ -132,8 +132,10 @@ class DeviceTypeRegistry{
 					IPS_LogMessage('Test','Processing a Refresh');
 					IPS_LogMessage('Test','The mapping to search for is: '.$request['mapping']);
 					foreach (self::$supportedDeviceTypes as $deviceType) {
+						IPS_LogMessage('Test','Searching through all configuration');
 						$configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
 						foreach ($configurations as $configuration) {
+							IPS_LogMessage('Test','Got the configuration: '.json_encode($configuration));
 							$mapping = call_user_func(self::classPrefix . $deviceType . '::getMapping', $configuration);
 							IPS_LogMessage('Test','Comparing to: '.$mapping);
 							if(strtoupper($mapping)==strtoupper($request['mapping'])) {
