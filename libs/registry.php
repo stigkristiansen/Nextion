@@ -224,7 +224,7 @@ class DeviceTypeRegistry{
 				'Name' => 'Navn',
                 'ID' => 'ID',
                 'Status' => 'Status',
-				'Dual-state button' => 'flip-bryter'
+				'Dual-state button' => 'Flip-bryter'
             ]
         ];
         
