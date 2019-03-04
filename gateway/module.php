@@ -20,6 +20,9 @@ class NextionGateway extends IPSModule {
             },
             function ($Message, $Data, $Format) {
                 $this->SendDebug($Message, $Data, $Format);
+            },
+			function ($Command) {
+                $this->SendCommand($Command);
             }
         );
     }
@@ -31,6 +34,8 @@ class NextionGateway extends IPSModule {
         $this->RegisterPropertyBoolean ("log", false );
 		
 		$this->RegisterTimer('ReportStateTimer', 0, 'NHMI_ReportState($_IPS[\'TARGET\']);');
+		$this->RegisterTimer('ProcessRequestTimer', 0, 'NHMI_ProcessRequests($_IPS[\'TARGET\']);');
+		
 		
 		$this->registry->registerProperties();
     }
@@ -65,6 +70,22 @@ class NextionGateway extends IPSModule {
         }
     }
 	
+	public function ProcessRequest(){
+		$this->SetTimerInterval('ProcessRequestTimer', 0);
+		
+		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
+		
+		$log->LogMessage("ProcessRequest timer was triggered");
+		
+        $requests = $this->GetBuffer('Requests');
+		
+		if ($requests != '') {
+            $states = $this->registry->ProcessRequest(json_decode($requests, true));
+            $this->SetBuffer('Requests', '');
+        }
+		
+	}
+		
 	public function MessageSink($timestamp, $senderID, $messageID, $data)
     {
 		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
@@ -83,7 +104,7 @@ class NextionGateway extends IPSModule {
 		
 		
     }
-	
+		
     public function ReportState(){
 		$this->SetTimerInterval('ReportStateTimer', 0);
 		
@@ -94,13 +115,11 @@ class NextionGateway extends IPSModule {
         $variableUpdates = $this->GetBuffer('VariableUpdates');
 		$states = [];
         if ($variableUpdates != '') {
-            $states = $this->registry->ReportState(json_decode($variableUpdates, true));
             $this->SetBuffer('VariableUpdates', '');
+			$states = $this->registry->ReportState(json_decode($variableUpdates, true));
         }
 		
-		foreach($states as $state) {
-			$this->SendCommand($state['command']);
-		}
+		
     }
     
     public function ReceiveData($JSONString) {
@@ -146,12 +165,15 @@ class NextionGateway extends IPSModule {
 			
 			$log->LogMessage("Analyzing the incoming message...");
 			if(strlen($message)>1) { //length of 1 indicates a return code 
-				try{
-					$log->LogMessage("The message should be sent to the the connected child. Sending...");
-					$this->SendDataToChildren(json_encode(Array("DataID" => "{63642483-512D-44D0-AD97-18FB03CD2503}", "Buffer" => $message)));
-				}catch(Exeption $ex){
-					$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
-				}
+				$currentRequestsString = $this->GetBuffer('Requests');
+				$currentRequests = ($currentRequestsString == '') ? [] : json_decode($currentRequestsString, true);
+				$currentRequests[] = $message;	
+				
+				$this->SetBuffer('Requests', json_encode($currentRequests));
+										
+				$this->SetTimerInterval('ProcessRequestTimer', 1000);
+			
+				$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
 			} else {
 				$returnCode = ord($message);
 				$log->LogMessage("The message received was a return code");

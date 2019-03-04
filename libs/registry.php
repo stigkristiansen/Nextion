@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-class DeviceTypeRegistry
-{
+
+class DeviceTypeRegistry{
     const classPrefix = 'DeviceType';
     const propertyPrefix = 'Device';
 	
@@ -19,11 +19,13 @@ class DeviceTypeRegistry
     private $registerProperty = null;
     private $sendDebug = null;
     private $instanceID = 0;
+	private $sendCommand = null;
     
-	public function __construct(int $instanceID, callable $registerProperty, callable $sendDebug) {
+	public function __construct(int $instanceID, callable $registerProperty, callable $sendDebug, callable $sendCommand) {
         $this->sendDebug = $sendDebug;
         $this->registerProperty = $registerProperty;
         $this->instanceID = $instanceID;
+		$this->sendCommand = $sendCommand;
     }
     
 	public function registerProperties(): void {
@@ -111,9 +113,37 @@ class DeviceTypeRegistry
 
 		IPS_logMessage("Test","States: ".json_encode($states));
 		
-		return $states;
+		foreach($states as $state) {
+			($this->sendCommand)($state['command']);
+		}
+		
+		//return $states;
 		
 	 }
+	 
+	public function ProcessRequest($requests) {
+		IPS_LogMessage('Test: ',"Inside Registry::ProcessRequest"); 
+		
+		$variableUpdates = [];
+		foreach($requests as $request){
+			switch(strtoupper($request['command'])){
+				case 'REFRESH':
+					foreach ($configurations as $configuration) {
+						$mapping = call_user_func(self::classPrefix . $deviceType . '::getMapping', $configuration);
+						if(strtoupper($mapping)==strtoupper($request['mapping'])) {
+							$variableUpdates[] = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
+							$this->ReportState($variableUpdates);
+						}
+					}
+					break;
+				case 'SETVALUE':
+				
+					break;
+				else
+					throw new Exception('Unsupported command received from Nextion');
+			}
+		}
+	}
 	
 	public function getConfigurationForm(): array {
         $form = [];
@@ -188,13 +218,13 @@ class DeviceTypeRegistry
         return $form;
     }
 	
-	public function getTranslations(): array
-    {
+	public function getTranslations(): array {
         $translations = [
             'no' => [
-				'Name'                                                                                                                                 => 'Navn',
-                'ID'                                                                                                                                   => 'ID',
-                'Status'                                                                                                                               => 'Status',
+				'Name' => 'Navn',
+                'ID' => 'ID',
+                'Status' => 'Status',
+				'Dual-state button' => 'flip-bryter'
             ]
         ];
         

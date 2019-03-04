@@ -9,7 +9,7 @@ class DeviceTraitOnOff
     {
         return [
             [
-                'label' => 'Switch Variable',
+                'label' => 'Variable',
                 'name'  => self::propertyPrefix . 'ID',
                 'width' => '200px',
                 'add'   => 0,
@@ -88,6 +88,13 @@ class DeviceTraitOnOff
             $configuration[self::propertyPrefix . 'ID']
         ];
     }
+	
+	public static function getMapping($configuration) {
+		return return [
+            $configuration['Mapping']
+        ];
+	}
+	
     public static function supportedTraits($configuration)
     {
         return [
