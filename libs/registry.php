@@ -131,12 +131,15 @@ class DeviceTypeRegistry{
 				case 'REFRESH':
 					IPS_LogMessage('Test','Processing a Refresh');
 					IPS_LogMessage('Test','The mapping to search for is: '.$request['mapping']);
-					foreach ($configurations as $configuration) {
-						$mapping = call_user_func(self::classPrefix . $deviceType . '::getMapping', $configuration);
-						IPS_LogMessage('Test','Comparing to: '.$mapping);
-						if(strtoupper($mapping)==strtoupper($request['mapping'])) {
-							$variableUpdates[] = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
-							$this->ReportState($variableUpdates);
+					foreach (self::$supportedDeviceTypes as $deviceType) {
+						$configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
+						foreach ($configurations as $configuration) {
+							$mapping = call_user_func(self::classPrefix . $deviceType . '::getMapping', $configuration);
+							IPS_LogMessage('Test','Comparing to: '.$mapping);
+							if(strtoupper($mapping)==strtoupper($request['mapping'])) {
+								$variableUpdates[] = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
+								$this->ReportState($variableUpdates);
+							}
 						}
 					}
 					break;
