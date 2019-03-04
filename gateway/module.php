@@ -70,7 +70,7 @@ class NextionGateway extends IPSModule {
         }
     }
 	
-	public function ProcessRequest(){
+	public function ProcessRequests(){
 		$this->SetTimerInterval('ProcessRequestTimer', 0);
 		
 		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
@@ -157,7 +157,7 @@ class NextionGateway extends IPSModule {
 		}
 		
 		if(strlen($message+3)<strlen($data))
-				$buffer = substr($data, $i+2);
+				$buffer = substr($data, $i+3);
 			else
 				$buffer = "";
 	
