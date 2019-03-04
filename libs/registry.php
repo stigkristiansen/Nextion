@@ -95,7 +95,7 @@ class DeviceTypeRegistry{
 	
 	 public function ReportState($variableUpdates){
 		IPS_LogMessage('Test: ',"Inside Registry::ReportState"); 
-		 
+		IPS_LogMessage('Test: ',"Variable(s) to update is/are: ". json_encode($variableUpdates));  
         $states = [];
         foreach (self::$supportedDeviceTypes as $deviceType) {
             $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
