@@ -137,8 +137,8 @@ class DeviceTypeRegistry{
 						foreach ($configurations as $configuration) {
 							IPS_LogMessage('Test','Got the configuration: '.json_encode($configuration));
 							$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
-							IPS_LogMessage('Test','Comparing to: '.$mapping);
-							if(strtoupper($mapping)==strtoupper($request['mapping'])) {
+							IPS_LogMessage('Test','Comparing to: '.$mapping[0]);
+							if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
 								$variableUpdates[] = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
 								$this->ReportState($variableUpdates);
 							}
