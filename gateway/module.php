@@ -176,7 +176,7 @@ class NextionGateway extends IPSModule {
 				
 				$this->SetBuffer('Requests', json_encode($currentRequests));
 										
-				$this->SetTimerInterval('ProcessRequestTimer', 1000);
+				$this->SetTimerInterval('ProcessRequestTimer', 500);
 			
 				
 			} else {
