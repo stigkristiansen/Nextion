@@ -159,8 +159,13 @@ class NextionGateway extends IPSModule {
 		if($foundMessage) {
 			$log->LogMessage("Found message: ".$message);
 
-			$this->SetBuffer("SerialBuffer", "");
-			$log->LogMessage("Buffer is reset");
+			if(strlen($message+3)<strlen($data))
+				$buffer = substr($data, $i+2)
+			else
+				$buffer = "";
+				
+			$this->SetBuffer("SerialBuffer", $buffer);
+			$log->LogMessage(strlen($buffer>0)?"New buffer is ".$buffer:"Buffer is reset");
 			$this->Unlock("SerialBuffer");
 			
 			$log->LogMessage("Analyzing the incoming message...");
@@ -173,7 +178,7 @@ class NextionGateway extends IPSModule {
 										
 				$this->SetTimerInterval('ProcessRequestTimer', 1000);
 			
-				$log->LogMessageError("Failed to send message to the child. Error: ".$ex->getMessage());
+				
 			} else {
 				$returnCode = ord($message);
 				$log->LogMessage("The message received was a return code");
