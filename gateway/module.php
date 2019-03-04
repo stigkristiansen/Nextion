@@ -172,7 +172,7 @@ class NextionGateway extends IPSModule {
 			if(strlen($message)>1) { //length of 1 indicates a return code 
 				$currentRequestsString = $this->GetBuffer('Requests');
 				$currentRequests = ($currentRequestsString == '') ? [] : json_decode($currentRequestsString, true);
-				$currentRequests[] = $message;	
+				$currentRequests[] = json_decode($message, true);	
 				
 				$this->SetBuffer('Requests', json_encode($currentRequests));
 										
