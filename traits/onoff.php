@@ -90,7 +90,7 @@ class DeviceTraitOnOff
     }
 	
 	public static function getMapping($configuration) {
-		return return [
+		return [
             $configuration['Mapping']
         ];
 	}
