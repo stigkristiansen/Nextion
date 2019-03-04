@@ -155,15 +155,15 @@ class NextionGateway extends IPSModule {
 			}
 			$message .= $arr[$i];
 		}
+		
+		if(strlen($message+3)<strlen($data))
+				$buffer = substr($data, $i+2);
+			else
+				$buffer = "";
 	
 		if($foundMessage) {
 			$log->LogMessage("Found message: ".$message);
 
-			if(strlen($message+3)<strlen($data))
-				$buffer = substr($data, $i+2)
-			else
-				$buffer = "";
-				
 			$this->SetBuffer("SerialBuffer", $buffer);
 			$log->LogMessage(strlen($buffer>0)?"New buffer is ".$buffer:"Buffer is reset");
 			$this->Unlock("SerialBuffer");
