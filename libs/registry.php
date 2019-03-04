@@ -123,9 +123,10 @@ class DeviceTypeRegistry{
 	 
 	public function ProcessRequest($requests) {
 		IPS_LogMessage('Test: ',"Inside Registry::ProcessRequest"); 
-		
+		IPS_LogMessage('Test', 'Requests: '.json_encode($requests));
 		$variableUpdates = [];
 		foreach($requests as $request){
+			IPS_LogMessage('Test: ',"Checking command: ".$request['command']); 
 			switch(strtoupper($request['command'])){
 				case 'REFRESH':
 					foreach ($configurations as $configuration) {

@@ -80,8 +80,8 @@ class NextionGateway extends IPSModule {
         $requests = $this->GetBuffer('Requests');
 		
 		if ($requests != '') {
-            $states = $this->registry->ProcessRequest(json_decode($requests, true));
-            $this->SetBuffer('Requests', '');
+			$this->SetBuffer('Requests', '');
+            $this->registry->ProcessRequest(json_decode($requests, true));
         }
 		
 	}
