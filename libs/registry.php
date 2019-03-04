@@ -139,8 +139,9 @@ class DeviceTypeRegistry{
 							$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
 							IPS_LogMessage('Test','Comparing to: '.$mapping[0]);
 							if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
-								$variableUpdates[] = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
+								$variableUpdates = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
 								$this->ReportState($variableUpdates);
+								break;
 							}
 						}
 					}
