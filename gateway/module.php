@@ -10,6 +10,8 @@ include_once(__DIR__ . "/../types/autoload.php");
 
 
 class NextionGateway extends IPSModule {
+	const $EndOfMessage = "\xFF\xFF\xFF";
+	
     public function __construct($InstanceID)
     {
         parent::__construct($InstanceID);
@@ -141,7 +143,6 @@ class NextionGateway extends IPSModule {
 		
 		$log->LogMessage("Searching for a complete message...");	
 		
-		$endOfMessage = chr(0xFF).chr(0xFF).chr(0xFF);
 		$foundMessage = false;
 		$arr = str_split($data);
 		$max = sizeof($arr);
@@ -149,7 +150,7 @@ class NextionGateway extends IPSModule {
 		$message = "";
 		for($i=0;$i<$max-2;$i++) {
 			$test = $arr[$i].$arr[$i+1].$arr[$i+2];
-			if($test==$endOfMessage) {
+			if($test==$self::EndOfMessage) {
 				$foundMessage = true;
 				break;
 			}
@@ -218,9 +219,9 @@ class NextionGateway extends IPSModule {
 		
 		$this->Unlock("ReturnCode");
 		
-		$endOfMessage = "\xFF\xFF\xFF";
+		
 
-		SPRT_SendText(IPS_GetInstanceParentId($this->InstanceID), $Command.$endOfMessage);
+		SPRT_SendText(IPS_GetInstanceParentId($this->InstanceID), $Command.self::EndOfMessage);
 		
 		$log->LogMessage("The command was sent");
 		
@@ -255,8 +256,9 @@ class NextionGateway extends IPSModule {
 		];
 		
 		$deviceTypes = $this->registry->getConfigurationForm();
-        return json_encode(['elements'      => array_merge($deviceTypes, $logging),
-                            'translations'  => $this->registry->getTranslations()]);
+        return json_encode(['elements'      => array_merge($deviceTypes, $logging)]); //,
+                            
+							//'translations'  => $this->registry->getTranslations()]);
     }
  
     private function Lock($ident){

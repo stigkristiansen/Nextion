@@ -120,9 +120,6 @@ class DeviceTypeRegistry{
 		foreach($states as $state) {
 			($this->sendCommand)($state['command']);
 		}
-		
-		//return $states;
-		
 	 }
 	 
 	public function ProcessRequest($requests) {
