@@ -94,13 +94,14 @@ class DeviceTypeRegistry{
     }
 	
 	 public function ReportState($variableUpdates){
-		IPS_LogMessage('Test: ',"Inside Registry::ReportState"); 
-		IPS_LogMessage('Test: ',"Variable(s) to update is/are: ". json_encode($variableUpdates));  
+		IPS_LogMessage('ReportState: ',"Inside Registry::ReportState"); 
+		IPS_LogMessage('ReportState: ',"Variable(s) to update is/are: ". json_encode($variableUpdates));  
         $states = [];
         foreach (self::$supportedDeviceTypes as $deviceType) {
             $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
             foreach ($configurations as $configuration) {
                 $variableIDs = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
+				IPS_LogMessage("ReportState","Trying to match ".json_encode($variableIDs);
                 if (count(array_intersect($variableUpdates, $variableIDs)) > 0) {
                     $queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
                     if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
