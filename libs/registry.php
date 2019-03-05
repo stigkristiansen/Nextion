@@ -122,6 +122,25 @@ class DeviceTypeRegistry{
 		}
 	 }
 	 
+	 public function doExecuteDevice($deviceID, $deviceCommand, $deviceParams)
+    {
+        //Add all deviceType specific properties
+        foreach (self::$supportedDeviceTypes as $deviceType) {
+            $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
+            foreach ($configurations as $configuration) {
+                if ($configuration['ID'] == $deviceID) {
+                    return call_user_func(self::classPrefix . $deviceType . '::doExecute', $configuration, $deviceCommand, $deviceParams, $emulateStatus);
+                }
+            }
+        }
+        //Return an device not found error
+        return [
+            'ids'       => [$deviceID],
+            'status'    => 'ERROR',
+            'errorCode' => 'deviceNotFound'
+        ];
+    }
+	 
 	public function ProcessRequest($requests) {
 		IPS_LogMessage('ProcessRequest: ',"Inside Registry::ProcessRequest"); 
 		IPS_LogMessage('ProcessRequest', 'Requests: '.json_encode($requests));
@@ -129,7 +148,7 @@ class DeviceTypeRegistry{
 		foreach($requests as $request){
 			IPS_LogMessage('ProcessRequest: ',"Checking command: ".$request['command']); 
 			switch(strtoupper($request['command'])){
-				case 'REFRESH':
+				case 'GETVALUE':
 					IPS_LogMessage('ProcessRequest','Processing a Refresh');
 					IPS_LogMessage('ProcessRequest','The mapping to search for is: '.$request['mapping']);
 					foreach (self::$supportedDeviceTypes as $deviceType) {
@@ -229,36 +248,7 @@ class DeviceTypeRegistry{
         return $form;
     }
 	
-	/*public function getTranslations(): array {
-        $translations = [
-            'no' => [
-				'Name' => 'Navn',
-                'ID' => 'ID',
-                'Status' => 'Status',
-				'Dual-state button' => 'Flip-bryter'
-            ]
-        ];
-        
-		foreach (self::$supportedDeviceTypes as $deviceType) {
-            foreach (call_user_func(self::classPrefix . $deviceType . '::getTranslations') as $language => $languageTranslations) {
-                if (array_key_exists($language, $translations)) {
-                    foreach ($languageTranslations as $original => $translated) {
-                        if (array_key_exists($original, $translations[$language])) {
-                            if ($translations[$language][$original] != $translated) {
-                                throw new Exception('Different translations ' . $translated . ' + ' . $translations[$language][$original] . ' for original ' . $original . ' was found!');
-                            }
-                        } else {
-                            $translations[$language][$original] = $translated;
-                        }
-                    }
-                } else {
-                    $translations[$language] = $languageTranslations;
-                }
-            }
-        }
-        return $translations;
-    }
-	*/
+	
 }
 	
 ?>

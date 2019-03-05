@@ -19,21 +19,7 @@ class DeviceTypeGenericSwitch {
         return 'Dual-state button';
     }
 	
-	public static function getRequestTypes() {
-		return [
-			'Refresh',
-			'SetValue'
-		];
-	}
-    
-	public static function getTranslations(){
-        return [
-            'no' => [
-                'Dual-state button' => 'Flip-bryter',
-                'Variable' => 'Variabel'
-            ]
-        ];
-    }
+
 }
 
 DeviceTypeRegistry::register('GenericSwitch');
