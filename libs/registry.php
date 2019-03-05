@@ -101,10 +101,12 @@ class DeviceTypeRegistry{
             $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
             foreach ($configurations as $configuration) {
                 $variableIDs = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
-				IPS_LogMessage("ReportState","Trying to match ".json_encode($variableIDs);
+				IPS_LogMessage("ReportState","Trying to match ".json_encode($variableIDs));
                 if (count(array_intersect($variableUpdates, $variableIDs)) > 0) {
+					IPS_LogMessage("ReportState","It was a match");
                     $queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
                     if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
+						IPS_LogMessage("ReportState","Getting command to send...");
                         $states[$configuration['ID']] = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
 						
                     }
@@ -112,7 +114,7 @@ class DeviceTypeRegistry{
             }
         }
 
-		IPS_logMessage("Test","States: ".json_encode($states));
+		IPS_logMessage("ReportState","States: ".json_encode($states));
 		
 		foreach($states as $state) {
 			($this->sendCommand)($state['command']);
@@ -123,22 +125,22 @@ class DeviceTypeRegistry{
 	 }
 	 
 	public function ProcessRequest($requests) {
-		IPS_LogMessage('Test: ',"Inside Registry::ProcessRequest"); 
-		IPS_LogMessage('Test', 'Requests: '.json_encode($requests));
+		IPS_LogMessage('ProcessRequest: ',"Inside Registry::ProcessRequest"); 
+		IPS_LogMessage('ProcessRequest', 'Requests: '.json_encode($requests));
 		$variableUpdates = [];
 		foreach($requests as $request){
-			IPS_LogMessage('Test: ',"Checking command: ".$request['command']); 
+			IPS_LogMessage('ProcessRequest: ',"Checking command: ".$request['command']); 
 			switch(strtoupper($request['command'])){
 				case 'REFRESH':
-					IPS_LogMessage('Test','Processing a Refresh');
-					IPS_LogMessage('Test','The mapping to search for is: '.$request['mapping']);
+					IPS_LogMessage('ProcessRequest','Processing a Refresh');
+					IPS_LogMessage('ProcessRequest','The mapping to search for is: '.$request['mapping']);
 					foreach (self::$supportedDeviceTypes as $deviceType) {
-						IPS_LogMessage('Test','Searching through all configuration');
+						IPS_LogMessage('ProcessRequest','Searching through all configuration');
 						$configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
 						foreach ($configurations as $configuration) {
-							IPS_LogMessage('Test','Got the configuration: '.json_encode($configuration));
+							IPS_LogMessage('ProcessRequest','Got the configuration: '.json_encode($configuration));
 							$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
-							IPS_LogMessage('Test','Comparing to: '.$mapping[0]);
+							IPS_LogMessage('ProcessRequest','Comparing to: '.$mapping[0]);
 							if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
 								$variableUpdates = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
 								$this->ReportState($variableUpdates);
