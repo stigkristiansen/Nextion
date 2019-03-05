@@ -70,6 +70,8 @@ class NextionGateway extends IPSModule {
                 $this->RegisterMessage($variableID, 10603 /* VM_UPDATE */);
             }
         }
+		
+		$this->SetBuffer("SerialBuffer", "");
     }
 	
 	public function ProcessRequests(){
@@ -150,7 +152,7 @@ class NextionGateway extends IPSModule {
 		$message = "";
 		for($i=0;$i<$max-2;$i++) {
 			$test = $arr[$i].$arr[$i+1].$arr[$i+2];
-			if($test==$self::EndOfMessage) {
+			if($test==self::EndOfMessage) {
 				$foundMessage = true;
 				break;
 			}
