@@ -101,10 +101,11 @@ class DeviceTypeRegistry{
             $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
             foreach ($configurations as $configuration) {
                 $variableIDs = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
-				IPS_LogMessage("ReportState","Trying to match ".json_encode($variableIDs));
+				IPS_LogMessage("ReportState","Trying to match: ".json_encode($variableIDs));
                 if (count(array_intersect($variableUpdates, $variableIDs)) > 0) {
 					IPS_LogMessage("ReportState","It was a match");
                     $queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
+					IPS_LogMessage("ReportState","::doQuery returned: ".json_encode($queryResult));
                     if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
 						IPS_LogMessage("ReportState","Getting command to send...");
                         $states[$configuration['ID']] = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
