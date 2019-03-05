@@ -142,7 +142,7 @@ class DeviceTypeRegistry{
     }
 	 
 	public function ProcessRequest($requests) {
-		IPS_LogMessage('ProcessRequest: ',"Inside Registry::ProcessRequest"); 
+		IPS_LogMessage('ProcessRequest', "Inside Registry::ProcessRequest"); 
 		IPS_LogMessage('ProcessRequest', 'Requests: '.json_encode($requests));
 		$variableUpdates = [];
 		foreach($requests as $request){
