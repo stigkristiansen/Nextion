@@ -229,7 +229,7 @@ class DeviceTypeRegistry{
         return $form;
     }
 	
-	public function getTranslations(): array {
+	/*public function getTranslations(): array {
         $translations = [
             'no' => [
 				'Name' => 'Navn',
@@ -258,6 +258,7 @@ class DeviceTypeRegistry{
         }
         return $translations;
     }
+	*/
 }
 	
 ?>

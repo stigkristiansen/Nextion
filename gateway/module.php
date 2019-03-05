@@ -10,7 +10,7 @@ include_once(__DIR__ . "/../types/autoload.php");
 
 
 class NextionGateway extends IPSModule {
-	const $EndOfMessage = "\xFF\xFF\xFF";
+	const EndOfMessage = "\xFF\xFF\xFF";
 	
     public function __construct($InstanceID)
     {
