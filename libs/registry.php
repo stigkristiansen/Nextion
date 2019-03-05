@@ -146,32 +146,43 @@ class DeviceTypeRegistry{
 		IPS_LogMessage('ProcessRequest', 'Requests: '.json_encode($requests));
 		$variableUpdates = [];
 		foreach($requests as $request){
-			IPS_LogMessage('ProcessRequest: ',"Checking command: ".$request['command']); 
-			switch(strtoupper($request['command'])){
-				case 'GETVALUE':
-					IPS_LogMessage('ProcessRequest','Processing a Refresh');
-					IPS_LogMessage('ProcessRequest','The mapping to search for is: '.$request['mapping']);
-					foreach (self::$supportedDeviceTypes as $deviceType) {
-						IPS_LogMessage('ProcessRequest','Searching through all configuration');
-						$configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
-						foreach ($configurations as $configuration) {
-							IPS_LogMessage('ProcessRequest','Got the configuration: '.json_encode($configuration));
-							$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
-							IPS_LogMessage('ProcessRequest','Comparing to: '.$mapping[0]);
-							if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
-								$variableUpdates = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
-								$this->ReportState($variableUpdates);
-								break;
-							}
-						}
+			$foundDevice = false;
+			foreach (self::$supportedDeviceTypes as $deviceType) {
+				IPS_LogMessage('ProcessRequest','Searching through all configuration');
+				IPS_LogMessage('ProcessRequest','The mapping to search for is: '.$request['mapping']);
+				$configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
+				foreach ($configurations as $configuration) {
+					IPS_LogMessage('ProcessRequest','Got the configuration: '.json_encode($configuration));
+					$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
+					IPS_LogMessage('ProcessRequest','Comparing to: '.$mapping[0]);
+					if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
+						$variableUpdates = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
+						$foundDevice = true;	
+						IPS_LogMessage('ProcessRequest','Found a device');
+						break;
 					}
-					break;
-				case 'SETVALUE':
+				}
 				
+				if($foundDevice)
 					break;
-				default:
-					throw new Exception('Unsupported command received from Nextion');
 			}
+			
+			if($foundDevice) {
+				IPS_LogMessage('ProcessRequest: ',"Checking command: ".$request['command']); 
+				switch(strtoupper($request['command'])){
+					case 'GETVALUE':
+						IPS_LogMessage('ProcessRequest','Processing a GetValue');
+										
+						$this->ReportState($variableUpdates);
+						break;
+					case 'SETVALUE':
+						IPS_LogMessage('ProcessRequest','Processing a SetValue');
+						break;
+					default:
+						throw new Exception('Unsupported command received from Nextion');
+				}
+			} else
+				throw new Exception('No device match sent data from Nextion');
 		}
 	}
 	
