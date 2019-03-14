@@ -114,8 +114,8 @@ class DeviceTypeRegistry{
 						break;
                     }
                 }
-				if($foundDevice)
-					break;
+				//if($foundDevice)
+				//	break;
             }
         }
 
