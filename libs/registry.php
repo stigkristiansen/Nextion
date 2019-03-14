@@ -167,7 +167,7 @@ class DeviceTypeRegistry{
 								$queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
 								if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
 									IPS_LogMessage('ProcessRequest','Found a device');
-									($this->sendCommand)($queryResult['command'];);
+									($this->sendCommand)($queryResult['command']);
 								}
 								break;
 							case 'SETVALUE':
