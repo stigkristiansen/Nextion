@@ -40,33 +40,28 @@ class DeviceTraitOnOff
             return [];
         }
     }
-    public static function doExecute($configuration, $command, $data)
+    public static function doExecute($configuration, $Value)
     {
-        switch ($command) {
-            case 'action.devices.commands.OnOff':
-                if (self::switchDevice($configuration[self::propertyPrefix . 'ID'], $data['on'])) {
-                    $on = $data['on'];
-                    
-                    return [
-                        'ids'    => [$configuration['ID']],
-                        'status' => 'SUCCESS',
-                        'states' => [
-                            'on'     => $on,
-                            'online' => true
-                        ]
-                    ];
-                } else {
-                    return [
-                        'ids'       => [$configuration['ID']],
-                        'status'    => 'ERROR',
-                        'errorCode' => 'deviceTurnedOff'
-                    ];
-                }
-                break;
-            default:
-                throw new Exception('Command is not supported by this trait!');
-        }
+		if (self::switchDevice($configuration[self::propertyPrefix . 'ID'], $Value)) {
+			$on = boolval($Value);
+			
+			return [
+				'ids'    => [$configuration['ID']],
+				'status' => 'SUCCESS',
+				'states' => [
+					'on'     => $on,
+					'online' => true
+				]
+			];
+		} else {
+			return [
+				'ids'       => [$configuration['ID']],
+				'status'    => 'ERROR',
+				'errorCode' => 'deviceTurnedOff'
+			];
+		}
     }
+
     public static function getObjectIDs($configuration)
     {
         return [

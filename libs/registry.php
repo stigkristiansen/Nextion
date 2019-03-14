@@ -161,17 +161,19 @@ class DeviceTypeRegistry{
 					IPS_LogMessage('ProcessRequest','Comparing to: '.$mapping[0]);
 					if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
 						$foundDevice = true;
+						IPS_LogMessage('ProcessRequest','Found device');
 						switch(strtoupper($request['command'])){
 							case 'GETVALUE':
 								IPS_LogMessage('ProcessRequest','Processing a GetValue');
 								$queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
 								if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
-									IPS_LogMessage('ProcessRequest','Found a device');
 									($this->sendCommand)($queryResult['command']);
-								}
+								} else
+									throw new Exception('Invalid device!');
 								break;
 							case 'SETVALUE':
 								IPS_LogMessage('ProcessRequest','Processing a SetValue');
+								$queryResult = call_user_func(self::classPrefix . $deviceType . '::doExecute', $configuration, $request['value']);
 								break;
 							default:
 								throw new Exception('Unsupported command received from Nextion');
