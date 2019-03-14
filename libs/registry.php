@@ -150,7 +150,7 @@ class DeviceTypeRegistry{
 		IPS_LogMessage('ProcessRequest', 'Requests: '.json_encode($requests));
 		$variableUpdates = [];
 		foreach($requests as $request){
-			$foundDevice = false;
+			$validRequest = false;
 			foreach (self::$supportedDeviceTypes as $deviceType) {
 				IPS_LogMessage('ProcessRequest','Searching through all configuration');
 				IPS_LogMessage('ProcessRequest','The mapping to search for is: '.$request['mapping']);
@@ -160,8 +160,8 @@ class DeviceTypeRegistry{
 					$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
 					IPS_LogMessage('ProcessRequest','Comparing to: '.$mapping[0]);
 					if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
-						$foundDevice = true;
 						IPS_LogMessage('ProcessRequest','Found device');
+						$validRequest = true;
 						switch(strtoupper($request['command'])){
 							case 'GETVALUE':
 								IPS_LogMessage('ProcessRequest','Processing a GetValue');
@@ -185,11 +185,12 @@ class DeviceTypeRegistry{
 				}
 			}
 			
-			if($foundDevice) {
-				break;
-			} else
-				throw new Exception('No device match in sent data from Nextion');
+			if(!$validRequest)
+				throw new Exception('Invalid request received from Nextion');
+			
 		}
+		
+		
 	}
 	
 	public function getConfigurationForm(): array {
