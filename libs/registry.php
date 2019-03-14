@@ -132,7 +132,7 @@ class DeviceTypeRegistry{
         foreach (self::$supportedDeviceTypes as $deviceType) {
             $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
             foreach ($configurations as $configuration) {
-                if ($configuration['ID'] == $deviceID) {
+                if ($configuration['ID'] == $deviceID) { // Må fikses vi har variabelID 
                     return call_user_func(self::classPrefix . $deviceType . '::doExecute', $configuration, $deviceCommand, $deviceParams, $emulateStatus);
                 }
             }
@@ -160,10 +160,14 @@ class DeviceTypeRegistry{
 					$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
 					IPS_LogMessage('ProcessRequest','Comparing to: '.$mapping[0]);
 					if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
-						$variableUpdates = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration);
-						$foundDevice = true;	
-						IPS_LogMessage('ProcessRequest','Found a device');
-						break;
+						//$variableUpdates = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration); // Fikses vi har Id i configuration. Alltid bare en Id som skal returneres
+						$queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
+						if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
+							$foundDevice = true;	
+							IPS_LogMessage('ProcessRequest','Found a device');
+							$command = $queryResult['command'];
+							break;
+						}
 					}
 				}
 				
@@ -177,7 +181,9 @@ class DeviceTypeRegistry{
 					case 'GETVALUE':
 						IPS_LogMessage('ProcessRequest','Processing a GetValue');
 										
-						$this->ReportState($variableUpdates);
+						//$this->ReportState($variableUpdates);
+						
+						($this->sendCommand)($command);
 						break;
 					case 'SETVALUE':
 						IPS_LogMessage('ProcessRequest','Processing a SetValue');
@@ -186,7 +192,7 @@ class DeviceTypeRegistry{
 						throw new Exception('Unsupported command received from Nextion');
 				}
 			} else
-				throw new Exception('No device match sent data from Nextion');
+				throw new Exception('No device match in sent data from Nextion');
 		}
 	}
 	

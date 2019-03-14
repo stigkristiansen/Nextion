@@ -40,20 +40,13 @@ class DeviceTraitOnOff
             return [];
         }
     }
-    public static function doExecute($configuration, $command, $data, $emulateStatus)
+    public static function doExecute($configuration, $command, $data)
     {
         switch ($command) {
             case 'action.devices.commands.OnOff':
                 if (self::switchDevice($configuration[self::propertyPrefix . 'ID'], $data['on'])) {
                     $on = $data['on'];
-                    if (!$emulateStatus) {
-                        $i = 0;
-                        while (($data['on'] != self::getSwitchValue($configuration[self::propertyPrefix . 'ID'])) && $i < 10) {
-                            $i++;
-                            usleep(100000);
-                        }
-                        $on = self::getSwitchValue($configuration[self::propertyPrefix . 'ID']);
-                    }
+                    
                     return [
                         'ids'    => [$configuration['ID']],
                         'status' => 'SUCCESS',
