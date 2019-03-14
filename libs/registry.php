@@ -97,7 +97,6 @@ class DeviceTypeRegistry{
 		IPS_LogMessage('ReportState: ',"Inside Registry::ReportState"); 
 		IPS_LogMessage('ReportState: ',"Variable(s) to update is/are: ". json_encode($variableUpdates));  
         $states = [];
-		$foundDevice = false;
         foreach (self::$supportedDeviceTypes as $deviceType) {
             $configurations = json_decode(IPS_GetProperty($this->instanceID, self::propertyPrefix . $deviceType), true);
             foreach ($configurations as $configuration) {
@@ -110,12 +109,8 @@ class DeviceTypeRegistry{
                     if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
 						IPS_LogMessage("ReportState","Getting command to send...");
                         $states[$configuration['ID']] = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
-						$foundDevice = true;
-						//break;
                     }
                 }
-				//if($foundDevice)
-				//	break;
             }
         }
 

@@ -101,7 +101,7 @@ class NextionGateway extends IPSModule {
             $currentVariableUpdates = ($currentVariableUpdatesString == '') ? [] : json_decode($currentVariableUpdatesString, true);
             $currentVariableUpdates[] = $senderID;
             $this->SetBuffer('VariableUpdates', json_encode($currentVariableUpdates));
-            $this->SetTimerInterval('ReportStateTimer', 1000);
+            $this->SetTimerInterval('ReportStateTimer', 500);
 			
 			$log->LogMessage("Variable updates: ".json_encode($currentVariableUpdates));
         }
