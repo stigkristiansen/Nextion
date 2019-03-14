@@ -160,37 +160,31 @@ class DeviceTypeRegistry{
 					$mapping = call_user_func(self::classPrefix . $deviceType . '::getMappings', $configuration);
 					IPS_LogMessage('ProcessRequest','Comparing to: '.$mapping[0]);
 					if(strtoupper($mapping[0])==strtoupper($request['mapping'])) {
-						//$variableUpdates = call_user_func(self::classPrefix . $deviceType . '::getObjectIDs', $configuration); // Fikses vi har Id i configuration. Alltid bare en Id som skal returneres
-						$queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
-						if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
-							$foundDevice = true;	
-							IPS_LogMessage('ProcessRequest','Found a device');
-							$command = $queryResult['command'];
-							break;
+						$foundDevice = true;
+						switch(strtoupper($request['command'])){
+							case 'GETVALUE':
+								IPS_LogMessage('ProcessRequest','Processing a GetValue');
+								$queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
+								if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
+									IPS_LogMessage('ProcessRequest','Found a device');
+									($this->sendCommand)($queryResult['command'];);
+								}
+								break;
+							case 'SETVALUE':
+								IPS_LogMessage('ProcessRequest','Processing a SetValue');
+								break;
+							default:
+								throw new Exception('Unsupported command received from Nextion');
 						}
+						
+						break;
+						
 					}
 				}
-				
-				if($foundDevice)
-					break;
 			}
 			
 			if($foundDevice) {
-				IPS_LogMessage('ProcessRequest: ',"Checking command: ".$request['command']); 
-				switch(strtoupper($request['command'])){
-					case 'GETVALUE':
-						IPS_LogMessage('ProcessRequest','Processing a GetValue');
-										
-						//$this->ReportState($variableUpdates);
-						
-						($this->sendCommand)($command);
-						break;
-					case 'SETVALUE':
-						IPS_LogMessage('ProcessRequest','Processing a SetValue');
-						break;
-					default:
-						throw new Exception('Unsupported command received from Nextion');
-				}
+				break;
 			} else
 				throw new Exception('No device match in sent data from Nextion');
 		}
