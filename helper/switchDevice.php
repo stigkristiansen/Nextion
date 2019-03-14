@@ -34,10 +34,13 @@ trait HelperSwitchDevice {
         if (preg_match('/\.Reversed$/', $profileName)) {
             $value = !$value;
         }
+		
         return $value;
     }
     private static function switchDevice($variableID, $value)
     {
+		IPS_LogMessage("switchDevice","Switching device to ".(string)$value);
+		
         if (!IPS_VariableExists($variableID)) {
             return false;
         }
@@ -60,6 +63,9 @@ trait HelperSwitchDevice {
         } else {
             return false;
         }
+		
+		IPS_LogMessage("switchDevice","switching device to ".(string)$value);
+		
         // Revert value for reversed profile
         if (preg_match('/\.Reversed$/', $profileName)) {
             $value = !$value;
