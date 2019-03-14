@@ -111,7 +111,7 @@ class DeviceTypeRegistry{
 						IPS_LogMessage("ReportState","Getting command to send...");
                         $states[$configuration['ID']] = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
 						$foundDevice = true;
-						break;
+						//break;
                     }
                 }
 				//if($foundDevice)
