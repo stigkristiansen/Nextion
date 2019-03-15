@@ -104,6 +104,7 @@ class DeviceTypeRegistry{
 				IPS_LogMessage("ReportState","Trying to match: ".json_encode($variableIDs));
                 if (count(array_intersect($variableUpdates, $variableIDs)) > 0) {
 					IPS_LogMessage("ReportState","It was a match");
+					IPS_LogMessage('ReportState','Calling '.self::classPrefix . $deviceType . '::doQuery');
                     $queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
 					IPS_LogMessage("ReportState","::doQuery returned: ".json_encode($queryResult));
                     if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
@@ -162,7 +163,7 @@ class DeviceTypeRegistry{
 								IPS_LogMessage('ProcessRequest','Processing a GetValue');
 								IPS_LogMessage('ProcessRequest','Calling '.self::classPrefix . $deviceType . '::doQuery');
 								$queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
-								IPS_LogMessage('ProcessRequest','doQuery returned: '. json_encode($queryResult, true));
+								IPS_LogMessage('ProcessRequest','doQuery returned: '. json_encode($queryResult));
 								if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
 									($this->sendCommand)($queryResult['command']);
 								} else
