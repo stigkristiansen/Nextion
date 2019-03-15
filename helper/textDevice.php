@@ -37,7 +37,7 @@ trait HelperTextDevice {
 		
         return $value;
     }
-    private static function ChangeText($variableID, $value)
+    private static function changeText($variableID, $value)
     {
 		IPS_LogMessage("CahngeDevice","Changing device to ".(string)$value);
 		
