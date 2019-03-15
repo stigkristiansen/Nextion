@@ -32,7 +32,7 @@ class DeviceTraitText
         if (IPS_VariableExists($configuration[self::propertyPrefix . 'ID'])) {
 			$command = $configuration['Mapping'];
 			$value = self::getSwitchValue($configuration[self::propertyPrefix . 'ID']);
-			$command.=".txt=".$value);
+			$command.=".txt=".$value;
             return [
 				'command' => $command
             ];
