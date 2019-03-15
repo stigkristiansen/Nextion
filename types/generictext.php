@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-class DeviceTypeGenericSwitch {
+class DeviceTypeGenericText {
     private static $implementedType = 'TEXT';
     private static $implementedTraits = [
         'Text'
