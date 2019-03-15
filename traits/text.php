@@ -29,7 +29,7 @@ class DeviceTraitText
     }
     public static function doQuery($configuration)
     {
-		IPS_LogMessage('Inside DeviceTraitText::doQuery')
+		IPS_LogMessage('Inside DeviceTraitText::doQuery');
         if (IPS_VariableExists($configuration[self::propertyPrefix . 'ID'])) {
 			$command = $configuration['Mapping'];
 			$value = self::getTextValue($configuration[self::propertyPrefix . 'ID']);
