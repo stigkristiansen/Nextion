@@ -89,26 +89,7 @@ class NextionGateway extends IPSModule {
         }
 		
 	}
-		
-	public function MessageSink($timestamp, $senderID, $messageID, $data)
-    {
-		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
-		
-		$log->LogMessage("Received ".(string)$messageID." from ".(string)$senderId);
-		
-        if ($messageID == 10603) {
-            $currentVariableUpdatesString = $this->GetBuffer('VariableUpdates');
-            $currentVariableUpdates = ($currentVariableUpdatesString == '') ? [] : json_decode($currentVariableUpdatesString, true);
-            $currentVariableUpdates[] = $senderID;
-            $this->SetBuffer('VariableUpdates', json_encode($currentVariableUpdates));
-            $this->SetTimerInterval('ReportStateTimer', 500);
-			
-			$log->LogMessage("Variable updates: ".json_encode($currentVariableUpdates));
-        }
-		
-		
-    }
-		
+	
     public function ReportState(){
 		$this->SetTimerInterval('ReportStateTimer', 0);
 		
@@ -122,8 +103,23 @@ class NextionGateway extends IPSModule {
             $this->SetBuffer('VariableUpdates', '');
 			$states = $this->registry->ReportState(json_decode($variableUpdates, true));
         }
+    }
+
 		
+	public function MessageSink($timestamp, $senderID, $messageID, $data){
+		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
 		
+		$log->LogMessage("Received ".(string)$messageID." from ".(string)$senderId);
+		
+        if ($messageID == 10603) {
+            $currentVariableUpdatesString = $this->GetBuffer('VariableUpdates');
+            $currentVariableUpdates = ($currentVariableUpdatesString == '') ? [] : json_decode($currentVariableUpdatesString, true);
+            $currentVariableUpdates[] = $senderID;
+            $this->SetBuffer('VariableUpdates', json_encode($currentVariableUpdates));
+            $this->SetTimerInterval('ReportStateTimer', 500);
+			
+			$log->LogMessage("Variable updates: ".json_encode($currentVariableUpdates));
+        }
     }
     
     public function ReceiveData($JSONString) {
