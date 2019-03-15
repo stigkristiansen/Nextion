@@ -77,7 +77,7 @@ class DeviceTypeRegistry{
         //This is dangerous. We need to be sure that we do not end in an endless loop!
         if ($wasChanged) {
             //Save. This will start a recursion. We need to be careful, that the recursion stops after this.
-            IPS_ApplyChanges($this->instanceID);
+            IPS_ApplyChanges ($this->instanceID);
         }
     }
 	
