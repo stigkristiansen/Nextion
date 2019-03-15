@@ -3,7 +3,7 @@ declare(strict_types=1);
 class DeviceTraitText
 {
     const propertyPrefix = 'Text';
-    use HelperSwitchDevice;
+    use HelperTextDevice;
     
 	public static function getColumns()
     {
