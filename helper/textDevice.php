@@ -21,25 +21,12 @@ trait HelperTextDevice {
         }
         return 'OK';
     }
-    private static function getTextValue($variableID)
-    {
-        $targetVariable = IPS_GetVariable($variableID);
-        if ($targetVariable['VariableCustomProfile'] != '') {
-            $profileName = $targetVariable['VariableCustomProfile'];
-        } else {
-            $profileName = $targetVariable['VariableProfile'];
-        }
-        $value = GetValue($variableID);
-        // Revert value for reversed profile
-        if (preg_match('/\.Reversed$/', $profileName)) {
-            $value = !$value;
-        }
-		
-        return $value;
+    private static function getTextValue($variableID){
+        return GetValue($variableID);
     }
-    private static function changeText($variableID, $value)
-    {
-		IPS_LogMessage("CahngeDevice","Changing device to ".(string)$value);
+	
+    private static function changeText($variableID, $value){
+		IPS_LogMessage("ChangeDevice","Changing text to ".(string)$value);
 		
         if (!IPS_VariableExists($variableID)) {
             return false;
@@ -64,7 +51,7 @@ trait HelperTextDevice {
             return false;
         }
 		
-		IPS_LogMessage("ChangeDevice","Changing device to ".(string)$value);
+		IPS_LogMessage("ChangeDevice","Changing text to ".(string)$value);
 		
         // Revert value for reversed profile
         if (preg_match('/\.Reversed$/', $profileName)) {

@@ -160,7 +160,9 @@ class DeviceTypeRegistry{
 						switch(strtoupper($request['command'])){
 							case 'GETVALUE':
 								IPS_LogMessage('ProcessRequest','Processing a GetValue');
+								IPS_LogMessage('ProcessRequest','Calling '.self::classPrefix . $deviceType . '::doQuery');
 								$queryResult = call_user_func(self::classPrefix . $deviceType . '::doQuery', $configuration);
+								IPS_LogMessage('ProcessRequest','doQuery returned: '. json_encode($queryResult, true));
 								if (!isset($queryResult['status']) || ($queryResult['status'] != 'ERROR')) {
 									($this->sendCommand)($queryResult['command']);
 								} else
