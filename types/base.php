@@ -68,8 +68,7 @@ trait HelperDeviceTypeQuery
         foreach (self::$implementedTraits as $trait) {
 			IPS_LOgMessage('HelperDeviceType','Inside HelperDeviceType::doQuery');
 			IPS_LOgMessage('HelperDeviceType','Calling '.'DeviceTrait' . $trait . '::doQuery');
-			$result = call_user_func('DeviceTrait' . $trait . '::doQuery', $configuration)
-            $query = array_merge($query, $result);
+            $query = array_merge($query, call_user_func('DeviceTrait' . $trait . '::doQuery', $configuration));
         }
         $query['online'] = count($query) > 0;
         return $query;
