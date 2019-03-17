@@ -74,7 +74,7 @@ class NextionGateway extends IPSModule {
 		$this->SetBuffer("SerialBuffer", "");
     }
 	
-	public function ProcessRequests(){
+	public function ProcessRequests(){ 
 		$this->SetTimerInterval('ProcessRequestTimer', 0);
 		
 		$log = new Logging($this->ReadPropertyBoolean("log"), IPS_Getname($this->InstanceID));
