@@ -22,6 +22,6 @@ class DeviceTypeGenericText {
 
 }
 
-//DeviceTypeRegistry::register('GenericText');
+DeviceTypeRegistry::register('GenericText');
 
 ?>
