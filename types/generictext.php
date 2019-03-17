@@ -12,7 +12,7 @@ class DeviceTypeGenericText {
 	use HelperDeviceType;
     
 	public static function getPosition(){
-        return 50;
+        return 70;
     }
     
 	public static function getCaption(){
