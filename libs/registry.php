@@ -81,7 +81,7 @@ class DeviceTypeRegistry{
         }
     }
 	
-	public function getObjectIDs(){
+	public function getObjectIDs(){ 
         $result = [];
         // Add all variable IDs of all devices
         foreach (self::$supportedDeviceTypes as $deviceType) {
